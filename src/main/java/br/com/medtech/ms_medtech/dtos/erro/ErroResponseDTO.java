@@ -1,4 +1,6 @@
 package br.com.medtech.ms_medtech.dtos.erro;
 
-public record ErroResponseDTO() {
+import java.time.LocalDateTime;
+
+public record ErroResponseDTO(int status, String message, LocalDateTime timestamp) {
 }

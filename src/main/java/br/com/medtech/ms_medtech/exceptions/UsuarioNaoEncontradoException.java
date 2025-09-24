@@ -1,4 +1,7 @@
 package br.com.medtech.ms_medtech.exceptions;
 
-public class UsuarioNaoEncontradoException {
+public class UsuarioNaoEncontradoException extends RuntimeException {
+    public UsuarioNaoEncontradoException(String message) {
+        super(message);
+    }
 }
