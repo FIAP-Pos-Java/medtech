@@ -48,7 +48,7 @@ class LoginServiceTest {
     private LoginService loginService;
 
     @Test
-    @DisplayName("cadastrando um login com sucesso")
+    @DisplayName("cadastrando um login com sucesso.")
     void testCadastrandoLoginComSucesso() {
         // given
         CadastrarLoginDTO cadastrarLoginDTO = new CadastrarLoginDTO(UUID.randomUUID(), "teste@gmail.com", "12345");
