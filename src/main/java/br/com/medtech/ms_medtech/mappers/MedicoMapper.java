@@ -1,16 +1,16 @@
 package br.com.medtech.ms_medtech.mappers;
 
-import br.com.medtech.ms_medtech.dtos.pacientes.AtualizarPacienteDTO;
-import br.com.medtech.ms_medtech.dtos.pacientes.CadastrarPacienteDTO;
-import br.com.medtech.ms_medtech.dtos.pacientes.MostrarPacienteDTO;
-import br.com.medtech.ms_medtech.dtos.pacientes.MostrarTodosPacientesDTO;
-import br.com.medtech.ms_medtech.entities.Paciente;
+import br.com.medtech.ms_medtech.dtos.medicos.AtualizarMedicoDTO;
+import br.com.medtech.ms_medtech.dtos.medicos.CadastrarMedicoDTO;
+import br.com.medtech.ms_medtech.dtos.medicos.MostrarMedicoDTO;
+import br.com.medtech.ms_medtech.dtos.medicos.MostrarTodosMedicosDTO;
+import br.com.medtech.ms_medtech.entities.Medico;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface PacienteMapper {
-    Paciente toCadastrarPaciente(CadastrarPacienteDTO cadastrarPacienteDTO);
-    Paciente toAtualizarPaciente(AtualizarPacienteDTO atualizarPacienteDTO);
-    MostrarPacienteDTO toMostrarPacienteDTO(Paciente paciente);
-    MostrarTodosPacientesDTO toMostrarTodosPacientesDTO(Paciente paciente);
+public interface MedicoMapper {
+    Medico toCadastrarMedico(CadastrarMedicoDTO cadastrarMedicoDTO);
+    Medico toAtualizarMedico(AtualizarMedicoDTO atualizarMedicoDTO);
+    MostrarMedicoDTO toMostrarMedicoDTO(Medico Medico);
+    MostrarTodosMedicosDTO toMostrarTodosMedicosDTO(Medico Medico);
 }

@@ -1,4 +1,4 @@
-package br.com.medtech.ms_medtech.dtos.pacientes;
+package br.com.medtech.ms_medtech.dtos.medicos;
 
 import br.com.medtech.ms_medtech.entities.Login;
 import br.com.medtech.ms_medtech.entities.Role;
@@ -8,11 +8,13 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record CadastrarPacienteDTO(
+public record CadastrarMedicoDTO(
         UUID id,
         String nome,
         @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataNascimento,
         String telefone,
+        String crm,
+        String especialidade,
         @NotNull
         Login login,
         @NotNull
