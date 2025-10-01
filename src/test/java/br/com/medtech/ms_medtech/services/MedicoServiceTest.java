@@ -1,18 +1,18 @@
 package br.com.medtech.ms_medtech.services;
 
 import br.com.medtech.ms_medtech.converters.UUIDUtils;
-import br.com.medtech.ms_medtech.dtos.pacientes.AtualizarPacienteDTO;
-import br.com.medtech.ms_medtech.dtos.pacientes.CadastrarPacienteDTO;
-import br.com.medtech.ms_medtech.dtos.pacientes.MostrarPacienteDTO;
-import br.com.medtech.ms_medtech.dtos.pacientes.MostrarTodosPacientesDTO;
+import br.com.medtech.ms_medtech.dtos.medicos.AtualizarMedicoDTO;
+import br.com.medtech.ms_medtech.dtos.medicos.CadastrarMedicoDTO;
+import br.com.medtech.ms_medtech.dtos.medicos.MostrarMedicoDTO;
+import br.com.medtech.ms_medtech.dtos.medicos.MostrarTodosMedicosDTO;
 import br.com.medtech.ms_medtech.entities.Login;
-import br.com.medtech.ms_medtech.entities.Paciente;
+import br.com.medtech.ms_medtech.entities.Medico;
 import br.com.medtech.ms_medtech.exceptions.LoginNaoEncontradoException;
 import br.com.medtech.ms_medtech.exceptions.UsuarioCadastradoException;
 import br.com.medtech.ms_medtech.exceptions.UsuarioNaoEncontradoException;
-import br.com.medtech.ms_medtech.mappers.PacienteMapper;
+import br.com.medtech.ms_medtech.mappers.MedicoMapper;
 import br.com.medtech.ms_medtech.repositories.LoginRepository;
-import br.com.medtech.ms_medtech.repositories.PacienteRepository;
+import br.com.medtech.ms_medtech.repositories.MedicoRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,53 +37,52 @@ import static org.mockito.Mockito.any;
 
 
 @ExtendWith(MockitoExtension.class)
-class PacienteServiceTest {
+class MedicoServiceTest {
 
     @Mock
-    private PacienteRepository pacienteRepository;
+    private MedicoRepository medicoRepository;
 
     @Mock
     private LoginRepository loginRepository;
 
     @Mock
-    private PacienteMapper pacienteMapper;
+    private MedicoMapper medicoMapper;
 
     @Mock
     private UUIDUtils uuidUtils;
 
     @InjectMocks
-    private PacienteService pacienteService;
+    private MedicoService medicoService;
 
     @Test
-    @DisplayName("cadastrando um paciente com sucesso")
-    void testeCadastrarPacienteComSucesso(){
+    @DisplayName("cadastrando um Medico com sucesso")
+    void testeCadastrarMedicoComSucesso(){
         // given
-        var dto = mock(CadastrarPacienteDTO.class);
+        var dto = mock(CadastrarMedicoDTO.class);
         var login = mock(Login.class);
         UUID loginId = UUID.randomUUID();
 
         given(dto.login()).willReturn(login);
         given(login.getId()).willReturn(loginId);
         given(this.loginRepository.findById(loginId)).willReturn(Optional.of(login));
-        given(this.pacienteRepository.findByLogin_Id(loginId)).willReturn(Optional.empty());
+        given(this.medicoRepository.findByLogin_Id(loginId)).willReturn(Optional.empty());
 
-        Paciente paciente = new Paciente();
-        given(this.pacienteMapper.toCadastrarPaciente(dto)).willReturn(paciente);
+        Medico Medico = new Medico();
+        given(this.medicoMapper.toCadastrarMedico(dto)).willReturn(Medico);
 
         // when
-        this.pacienteService.cadastrarPaciente(dto);
+        this.medicoService.cadastrarMedico(dto);
 
         // then
-        assertThat(paciente.getLogin(), equalTo(login));
-        verify(pacienteRepository, times(1)).save(paciente);
+        assertThat(Medico.getLogin(), equalTo(login));
+        verify(medicoRepository, times(1)).save(Medico);
     }
 
-
     @Test
-    @DisplayName("cadastrando um paciente com login sem sucesso")
-    void testeCadastrandoUmPacienteComLoginSemSucesso(){
+    @DisplayName("cadastrando um medico com login sem sucesso")
+    void testeCadastrandoUmMedicoComLoginSemSucesso(){
         // given
-        var dto = mock(CadastrarPacienteDTO.class);
+        var dto = mock(CadastrarMedicoDTO.class);
         var login = mock(Login.class);
         UUID loginId = UUID.randomUUID();
         given(dto.login()).willReturn(login);
@@ -91,93 +90,94 @@ class PacienteServiceTest {
         given(this.loginRepository.findById(any())).willReturn(Optional.empty());
 
         // when
-        LoginNaoEncontradoException exception = assertThrows(LoginNaoEncontradoException.class, () -> this.pacienteService.cadastrarPaciente(dto));
+        LoginNaoEncontradoException exception = assertThrows(LoginNaoEncontradoException.class, () -> this.medicoService.cadastrarMedico(dto));
 
         // then
         assertThat(exception.getMessage(), containsString("este login não existe no sistema, por isso não pode ser feito referencia"));
     }
 
     @Test
-    @DisplayName("cadastrandum paciente que ja existe sem sucesso")
-    void testCadastrandoUmPacienteQueJaExisteSemSucesso(){
-        var dto = mock(CadastrarPacienteDTO.class);
+    @DisplayName("cadastrandum medico que ja existe sem sucesso")
+    void testCadastrandoUmMedicoQueJaExisteSemSucesso(){
+        var dto = mock(CadastrarMedicoDTO.class);
         var login = mock(Login.class);
         UUID loginId = UUID.randomUUID();
         given(dto.login()).willReturn(login);
         given(login.getId()).willReturn(loginId);
         given(this.loginRepository.findById(loginId)).willReturn(Optional.of(login));
-        given(this.pacienteRepository.findByLogin_Id(loginId)).willReturn(Optional.of(new Paciente()));
+        given(this.medicoRepository.findByLogin_Id(loginId)).willReturn(Optional.of(new Medico()));
 
         // when
-        UsuarioCadastradoException exception = assertThrows(UsuarioCadastradoException.class, () -> this.pacienteService.cadastrarPaciente(dto));
+        UsuarioCadastradoException exception = assertThrows(UsuarioCadastradoException.class, () -> this.medicoService.cadastrarMedico(dto));
 
         // then
-        assertThat(exception.getMessage(), containsString("este paciente já existe no sistema"));
+        assertThat(exception.getMessage(), containsString("este medico já existe no sistema"));
     }
 
     @Test
-    @DisplayName("buscando paciente pelo id com sucesso")
-    void testBuscandoPacientePorIdComSucesso(){
+    @DisplayName("buscando medico pelo id com sucesso")
+    void testBuscandoMedicoPorIdComSucesso(){
         // given
         String idStr = "12345678901234567890123456789012";
         UUID id = UUID.randomUUID();
 
-        Paciente paciente = mock(Paciente.class);
-        paciente.setId(id);
+        Medico medico = mock(Medico.class);
 
-        MostrarPacienteDTO dto = mock(MostrarPacienteDTO.class);
+        medico.setId(id);
+
+        MostrarMedicoDTO dto = mock(MostrarMedicoDTO.class);
 
         given(this.uuidUtils.retornaStringSemHifen(idStr)).willReturn(id);
-        given(this.pacienteRepository.findById(id)).willReturn(Optional.of(paciente));
-        given(this.pacienteMapper.toMostrarPacienteDTO(paciente)).willReturn(dto);
+        given(this.medicoRepository.findById(id)).willReturn(Optional.of(medico));
+        given(this.medicoMapper.toMostrarMedicoDTO(medico)).willReturn(dto);
 
         // when
-        MostrarPacienteDTO resultado = this.pacienteService.buscarPacientePorId(idStr);
+        MostrarMedicoDTO resultado = this.medicoService.buscarMedicoPorId(idStr);
 
         // then
         assertThat(resultado, is(notNullValue()));
     }
 
     @Test
-    @DisplayName("buscando paciente por id sem sucesso")
-    void testBuscandoPacientePorIdSemSucesso(){
+    @DisplayName("buscando medico por id sem sucesso")
+    void testBuscandoMedicoPorIdSemSucesso(){
         // given
         String idStr = "12345678901234567890123456789012";
         UUID id = UUID.randomUUID();
 
         given(this.uuidUtils.retornaStringSemHifen(idStr)).willReturn(id);
-        given(this.pacienteRepository.findById(id)).willReturn(Optional.empty());
+        given(this.medicoRepository.findById(id)).willReturn(Optional.empty());
 
         // when
-        UsuarioNaoEncontradoException exception = assertThrows(UsuarioNaoEncontradoException.class, () -> this.pacienteService.buscarPacientePorId(idStr));
+        UsuarioNaoEncontradoException exception = assertThrows(UsuarioNaoEncontradoException.class, () -> this.medicoService.buscarMedicoPorId(idStr));
 
         // then
-        assertThat(exception.getMessage(), containsString("este paciente não está cadastrado"));
+        assertThat(exception.getMessage(), containsString("este medico não está cadastrado"));
     }
 
     @Test
-    @DisplayName("buscando todos os pacientes com sucesso")
-    void testBuscandoTodosOsPacienteComSucesso(){
+    @DisplayName("buscando todos os medicos com sucesso")
+    void testBuscandoTodosOsMedicosComSucesso(){
         // given
         int page = 0;
         int size = 10;
         Pageable pageable = PageRequest.of(page, size);
 
-        Paciente p1 = mock(Paciente.class);
-        Paciente p2 = mock(Paciente.class);
+        Medico p1 = mock(Medico.class);
+        Medico p2 = mock(Medico.class);
 
-        List<Paciente> pacientes = List.of(p1, p2);
-        Page<Paciente> pagePacientes = new PageImpl<>(pacientes, pageable, pacientes.size());
+        List<Medico> medicos = List.of(p1, p2);
+        Page<Medico> pageMedicos = new PageImpl<>(medicos, pageable, medicos.size());
 
-        MostrarTodosPacientesDTO m1 = mock(MostrarTodosPacientesDTO.class);
-        MostrarTodosPacientesDTO m2 = mock(MostrarTodosPacientesDTO.class);
+        MostrarTodosMedicosDTO m1 = mock(MostrarTodosMedicosDTO.class);
+        MostrarTodosMedicosDTO m2 = mock(MostrarTodosMedicosDTO.class);
 
-        given(this.pacienteRepository.findAll(pageable)).willReturn(pagePacientes);
-        given(this.pacienteMapper.toMostrarTodosPacientesDTO(p1)).willReturn(m1);
-        given(this.pacienteMapper.toMostrarTodosPacientesDTO(p2)).willReturn(m2);
+        given(this.medicoRepository.findAll(pageable)).willReturn(pageMedicos);
+        given(this.medicoMapper.toMostrarTodosMedicosDTO(p1)).willReturn(m1);
+        given(this.medicoMapper.toMostrarTodosMedicosDTO(p2)).willReturn(m2);
 
         // when
-        Page<MostrarTodosPacientesDTO> resultado = this.pacienteService.buscarTodosPacientes(page, size);
+        Page<MostrarTodosMedicosDTO> resultado = this.medicoService.buscarTodosMedicos(page, size);
 
         //then
         assertThat(resultado, is(notNullValue()));
@@ -185,80 +185,81 @@ class PacienteServiceTest {
     }
 
     @Test
-    @DisplayName("deletando paciente com sucesso")
-    void testDeletandoPacienteComSucesso(){
+    @DisplayName("deletando medico com sucesso")
+    void testDeletandoMedicoComSucesso(){
         // given
         String idStr = "12345678901234567890123456789012";
         UUID id = UUID.randomUUID();
 
-        Paciente paciente = mock(Paciente.class);
+        Medico medico = mock(Medico.class);
 
         given(this.uuidUtils.retornaStringSemHifen(idStr)).willReturn(id);
-        given(this.pacienteRepository.findById(id)).willReturn(Optional.of(paciente));
+        given(this.medicoRepository.findById(id)).willReturn(Optional.of(medico));
 
         // when
-        this.pacienteService.deletarPacientePorId(idStr);
+        this.medicoService.deletarMedicoPorId(idStr);
 
         // then
-        verify(this.pacienteRepository, times(1)).deleteById(id);
+        verify(this.medicoRepository, times(1)).deleteById(id);
     }
 
     @Test
-    @DisplayName("deletando paciente por id sem sucesso")
-    void testDeletandoPacientePorIdSemSucesso(){
+    @DisplayName("deletando medico por id sem sucesso")
+    void testDeletandoMedicoPorIdSemSucesso(){
         //given
         String idStr = "12345678901234567890123456789012";
         UUID id = UUID.randomUUID();
 
         given(this.uuidUtils.retornaStringSemHifen(idStr)).willReturn(id);
-        given(this.pacienteRepository.findById(id)).willReturn(Optional.empty());
+        given(this.medicoRepository.findById(id)).willReturn(Optional.empty());
 
         // when
-        UsuarioNaoEncontradoException exception = assertThrows(UsuarioNaoEncontradoException.class, () -> this.pacienteService.deletarPacientePorId(idStr));
+        UsuarioNaoEncontradoException exception = assertThrows(UsuarioNaoEncontradoException.class, () -> this.medicoService.deletarMedicoPorId(idStr));
 
         // then
-        assertThat(exception.getMessage(), containsString("este paciente não está cadastrado"));
+        assertThat(exception.getMessage(), containsString("este medico não está cadastrado"));
     }
 
     @Test
-    @DisplayName("atualizando um paciente com sucesso")
-    void testAtualizandoPacienteComSucesso(){
+    @DisplayName("atualizando um medico com sucesso")
+    void testAtualizandomedicoComSucesso(){
         String idStr = "12345678901234567890123456789012";
         UUID id = UUID.randomUUID();
 
-        Paciente paciente = mock(Paciente.class);
-        Paciente pacienteAtualizado = mock(Paciente.class);
-        pacienteAtualizado.setId(id);
-        pacienteAtualizado.setNome("nome atualizado paciente");
-        AtualizarPacienteDTO dto = mock(AtualizarPacienteDTO.class);
+        Medico medico = mock(Medico.class);
+        Medico medicoAtualizado = mock(Medico.class);
+        medicoAtualizado.setId(id);
+        medicoAtualizado.setNome("nome atualizado medico");
+        AtualizarMedicoDTO dto = mock(AtualizarMedicoDTO.class);
 
         given(this.uuidUtils.retornaStringSemHifen(idStr)).willReturn(id);
-        given(this.pacienteRepository.findById(id)).willReturn(Optional.of(paciente));
-        given(this.pacienteMapper.toAtualizarPaciente(dto)).willReturn(pacienteAtualizado);
+        given(this.medicoRepository.findById(id)).willReturn(Optional.of(medico));
+        given(this.medicoMapper.toAtualizarMedico(dto)).willReturn(medicoAtualizado);
 
         // when
-        this.pacienteService.atualizarPaciente(idStr, dto);
+        this.medicoService.atualizarMedico(idStr, dto);
 
         // then
-        verify(this.pacienteRepository, times(1)).save(any(Paciente.class));
+        verify(this.medicoRepository, times(1)).save(any(Medico.class));
     }
 
     @Test
-    @DisplayName("atualizando um paciente sem sucesso")
-    void testAtualizandoPacienteSemSucesso(){
+    @DisplayName("atualizando um medico sem sucesso")
+    void testAtualizandomedicoSemSucesso(){
         // given
         String idStr = "12345678901234567890123456789012";
         UUID id = UUID.randomUUID();
 
-        AtualizarPacienteDTO dto = mock(AtualizarPacienteDTO.class);
+        AtualizarMedicoDTO dto = mock(AtualizarMedicoDTO.class);
 
         given(this.uuidUtils.retornaStringSemHifen(idStr)).willReturn(id);
-        given(this.pacienteRepository.findById(id)).willReturn(Optional.empty());
+        given(this.medicoRepository.findById(id)).willReturn(Optional.empty());
 
         // when
-        UsuarioNaoEncontradoException exception = assertThrows(UsuarioNaoEncontradoException.class, () -> this.pacienteService.atualizarPaciente(idStr, dto));
+        UsuarioNaoEncontradoException exception = assertThrows(UsuarioNaoEncontradoException.class, () -> this.medicoService.atualizarMedico(idStr, dto));
 
         // then
-        assertThat(exception.getMessage(), containsString("este paciente não está cadastrado"));
+        assertThat(exception.getMessage(), containsString("este medico não está cadastrado"));
     }
+
 }

@@ -1,17 +1,19 @@
 package br.com.medtech.ms_medtech.services;
 
 import br.com.medtech.ms_medtech.converters.UUIDUtils;
-import br.com.medtech.ms_medtech.dtos.pacientes.AtualizarPacienteDTO;
-import br.com.medtech.ms_medtech.dtos.pacientes.CadastrarPacienteDTO;
-import br.com.medtech.ms_medtech.dtos.pacientes.MostrarPacienteDTO;
-import br.com.medtech.ms_medtech.dtos.pacientes.MostrarTodosPacientesDTO;
-import br.com.medtech.ms_medtech.entities.Paciente;
+
+import br.com.medtech.ms_medtech.dtos.medicos.AtualizarMedicoDTO;
+import br.com.medtech.ms_medtech.dtos.medicos.CadastrarMedicoDTO;
+import br.com.medtech.ms_medtech.dtos.medicos.MostrarMedicoDTO;
+import br.com.medtech.ms_medtech.dtos.medicos.MostrarTodosMedicosDTO;
+import br.com.medtech.ms_medtech.entities.Medico;
+import br.com.medtech.ms_medtech.entities.Medico;
 import br.com.medtech.ms_medtech.exceptions.LoginNaoEncontradoException;
 import br.com.medtech.ms_medtech.exceptions.UsuarioCadastradoException;
 import br.com.medtech.ms_medtech.exceptions.UsuarioNaoEncontradoException;
-import br.com.medtech.ms_medtech.mappers.PacienteMapper;
+import br.com.medtech.ms_medtech.mappers.MedicoMapper;
 import br.com.medtech.ms_medtech.repositories.LoginRepository;
-import br.com.medtech.ms_medtech.repositories.PacienteRepository;
+import br.com.medtech.ms_medtech.repositories.MedicoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,69 +25,69 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class PacienteService {
-    private final PacienteRepository pacienteRepository;
+public class MedicoService {
+    private final MedicoRepository medicoRepository;
     private final LoginRepository loginRepository;
-    private final PacienteMapper pacienteMapper;
+    private final MedicoMapper medicoMapper;
     private final UUIDUtils uuidUtils;
 
-    private final String MESSAGE_PACIENTE_ENCONTRADO = "este paciente já existe no sistema";
-    private final String MESSAGE_PACIENTE_NAO_ENCONTRADO = "este paciente não está cadastrado";
+    private final String MESSAGE_MEDICO_ENCONTRADO = "este medico já existe no sistema";
+    private final String MESSAGE_MEDICO_NAO_ENCONTRADO = "este medico não está cadastrado";
     private final String MESSAGE_LOGIN_NAO_ENCONTRADO = "este login não existe no sistema, por isso não pode ser feito referencia";
 
-    public void cadastrarPaciente(CadastrarPacienteDTO cadastrarPacienteDTO){
+    public void cadastrarMedico(CadastrarMedicoDTO cadastrarMedicoDTO){
 
-        var buscandoLogin = this.loginRepository.findById(cadastrarPacienteDTO.login().getId()).orElseThrow(() -> new LoginNaoEncontradoException(MESSAGE_LOGIN_NAO_ENCONTRADO));
-        var buscandoPaciente = this.pacienteRepository.findByLogin_Id(cadastrarPacienteDTO.login().getId());
+        var buscandoLogin = this.loginRepository.findById(cadastrarMedicoDTO.login().getId()).orElseThrow(() -> new LoginNaoEncontradoException(MESSAGE_LOGIN_NAO_ENCONTRADO));
+        var buscandoMedico = this.medicoRepository.findByLogin_Id(cadastrarMedicoDTO.login().getId());
 
-        if(buscandoPaciente.isPresent()){
-            throw new UsuarioCadastradoException(MESSAGE_PACIENTE_ENCONTRADO);
+        if(buscandoMedico.isPresent()){
+            throw new UsuarioCadastradoException(MESSAGE_MEDICO_ENCONTRADO);
         }
 
-        Paciente paciente = this.pacienteMapper.toCadastrarPaciente(cadastrarPacienteDTO);
-        paciente.setDataCadastro(LocalDateTime.now());
-        paciente.setLogin(buscandoLogin);
-        this.pacienteRepository.save(paciente);
+        Medico medico = this.medicoMapper.toCadastrarMedico(cadastrarMedicoDTO);
+        medico.setDataCadastro(LocalDateTime.now());
+        medico.setLogin(buscandoLogin);
+        this.medicoRepository.save(medico);
     }
 
-    public MostrarPacienteDTO buscarPacientePorId(String idStr){
+    public MostrarMedicoDTO buscarMedicoPorId(String idStr){
         UUID id = this.uuidUtils.retornaStringSemHifen(idStr);
-        var buscarPaciente = this.pacienteRepository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(MESSAGE_PACIENTE_NAO_ENCONTRADO));
+        var buscarMedico = this.medicoRepository.findById(id).orElseThrow(() -> new UsuarioNaoEncontradoException(MESSAGE_MEDICO_NAO_ENCONTRADO));
 
-        MostrarPacienteDTO mostrarPacienteDTO = this.pacienteMapper.toMostrarPacienteDTO(buscarPaciente);
-        return mostrarPacienteDTO;
+        MostrarMedicoDTO mostrarMedicoDTO = this.medicoMapper.toMostrarMedicoDTO(buscarMedico);
+        return mostrarMedicoDTO;
     }
 
-    public Page<MostrarTodosPacientesDTO> buscarTodosPacientes(int page, int size){
+    public Page<MostrarTodosMedicosDTO> buscarTodosMedicos(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
-        Page<Paciente> pacientesPage = this.pacienteRepository.findAll(pageable);
-        Page<MostrarTodosPacientesDTO> mostrarTodosPacientes = pacientesPage.map(this.pacienteMapper::toMostrarTodosPacientesDTO);
-        return mostrarTodosPacientes;
+        Page<Medico> medicosPage = this.medicoRepository.findAll(pageable);
+        Page<MostrarTodosMedicosDTO> mostrarTodosMedicos = medicosPage.map(this.medicoMapper::toMostrarTodosMedicosDTO);
+        return mostrarTodosMedicos;
     }
 
-    public void deletarPacientePorId(String idStr){
+    public void deletarMedicoPorId(String idStr){
         UUID id = this.uuidUtils.retornaStringSemHifen(idStr);
-        var buscarPaciente = this.pacienteRepository.findById(id);
+        var buscarMedico = this.medicoRepository.findById(id);
 
-        if(buscarPaciente.isEmpty()){
-            throw new UsuarioNaoEncontradoException(MESSAGE_PACIENTE_NAO_ENCONTRADO);
+        if(buscarMedico.isEmpty()){
+            throw new UsuarioNaoEncontradoException(MESSAGE_MEDICO_NAO_ENCONTRADO);
         }
 
-        this.pacienteRepository.deleteById(id);
+        this.medicoRepository.deleteById(id);
     }
 
-    public void atualizarPaciente(String idStr, AtualizarPacienteDTO atualizarPacienteDTO){
+    public void atualizarMedico(String idStr, AtualizarMedicoDTO atualizarMedicoDTO){
         UUID id = this.uuidUtils.retornaStringSemHifen(idStr);
-        var buscarPaciente = this.pacienteRepository.findById(id);
+        var buscarMedico = this.medicoRepository.findById(id);
 
-        if(buscarPaciente.isEmpty()){
-            throw new UsuarioNaoEncontradoException(MESSAGE_PACIENTE_NAO_ENCONTRADO);
+        if(buscarMedico.isEmpty()){
+            throw new UsuarioNaoEncontradoException(MESSAGE_MEDICO_NAO_ENCONTRADO);
         }
 
-        Paciente pacienteAtualizado = this.pacienteMapper.toAtualizarPaciente(atualizarPacienteDTO);
-        pacienteAtualizado.setId(id);
-        pacienteAtualizado.setDataCadastro(buscarPaciente.get().getDataCadastro());
-        pacienteAtualizado.setLogin(buscarPaciente.get().getLogin());
-        this.pacienteRepository.save(pacienteAtualizado);
+        Medico medicoAtualizado = this.medicoMapper.toAtualizarMedico(atualizarMedicoDTO);
+        medicoAtualizado.setId(id);
+        medicoAtualizado.setDataCadastro(buscarMedico.get().getDataCadastro());
+        medicoAtualizado.setLogin(buscarMedico.get().getLogin());
+        this.medicoRepository.save(medicoAtualizado);
     }
 }

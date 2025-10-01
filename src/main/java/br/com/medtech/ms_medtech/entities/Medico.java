@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tb_paciente")
-public final class Paciente extends Usuario{
+@Table(name = "tb_medico")
+public final class Medico extends Usuario{
+    private String crm;
+    private String especialidade;
 }
