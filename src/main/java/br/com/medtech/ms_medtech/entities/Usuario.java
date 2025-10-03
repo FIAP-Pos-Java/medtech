@@ -23,6 +23,7 @@ public abstract class Usuario {
     private LocalDate dataNascimento;
     private LocalDateTime dataCadastro;
     private String telefone;
+    private boolean enabled;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_login")
