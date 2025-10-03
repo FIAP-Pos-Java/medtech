@@ -30,6 +30,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/login/**").permitAll();
                     authorize.requestMatchers("/medicos/**").permitAll();
+                    authorize.requestMatchers("/enfermeiros/**").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/pacientes/**").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/pacientes/**").permitAll();
                     authorize.requestMatchers(HttpMethod.DELETE, "/pacientes/**").hasRole("MEDICO");

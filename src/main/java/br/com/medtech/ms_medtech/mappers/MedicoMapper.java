@@ -11,6 +11,6 @@ import org.mapstruct.Mapper;
 public interface MedicoMapper {
     Medico toCadastrarMedico(CadastrarMedicoDTO cadastrarMedicoDTO);
     Medico toAtualizarMedico(AtualizarMedicoDTO atualizarMedicoDTO);
-    MostrarMedicoDTO toMostrarMedicoDTO(Medico Medico);
-    MostrarTodosMedicosDTO toMostrarTodosMedicosDTO(Medico Medico);
+    MostrarMedicoDTO toMostrarMedicoDTO(Medico medico);
+    MostrarTodosMedicosDTO toMostrarTodosMedicosDTO(Medico medico);
 }

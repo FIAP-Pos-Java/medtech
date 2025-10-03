@@ -7,7 +7,6 @@ import br.com.medtech.ms_medtech.dtos.medicos.CadastrarMedicoDTO;
 import br.com.medtech.ms_medtech.dtos.medicos.MostrarMedicoDTO;
 import br.com.medtech.ms_medtech.dtos.medicos.MostrarTodosMedicosDTO;
 import br.com.medtech.ms_medtech.entities.Medico;
-import br.com.medtech.ms_medtech.entities.Medico;
 import br.com.medtech.ms_medtech.exceptions.LoginNaoEncontradoException;
 import br.com.medtech.ms_medtech.exceptions.UsuarioCadastradoException;
 import br.com.medtech.ms_medtech.exceptions.UsuarioNaoEncontradoException;

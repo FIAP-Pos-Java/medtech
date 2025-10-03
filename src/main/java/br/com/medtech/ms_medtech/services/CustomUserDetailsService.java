@@ -2,6 +2,7 @@ package br.com.medtech.ms_medtech.services;
 
 import br.com.medtech.ms_medtech.entities.Usuario;
 import br.com.medtech.ms_medtech.exceptions.LoginNaoEncontradoException;
+import br.com.medtech.ms_medtech.repositories.EnfermeiroRepository;
 import br.com.medtech.ms_medtech.repositories.MedicoRepository;
 import br.com.medtech.ms_medtech.repositories.PacienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final PacienteRepository pacienteRepository;
     private final MedicoRepository medicoRepository;
-//    private final EnfermeiroRepository enfermeiroRepository;
+    private final EnfermeiroRepository enfermeiroRepository;
 
     private final String MESSAGE_LOGIN_NAO_ENCONTRADO = "este login não existe no sistema, por isso não pode ser feito referencia";
 
@@ -29,6 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario buscandoUsuario =
                 this.pacienteRepository.findByLoginEmail(username)
                         .or(() -> this.medicoRepository.findByLoginEmail(username))
+                        .or(() -> this.enfermeiroRepository.findByLoginEmail(username))
                         .orElseThrow(() -> new LoginNaoEncontradoException(MESSAGE_LOGIN_NAO_ENCONTRADO));
 
         String adicionandoPrefixoRole = "ROLE_" + buscandoUsuario.getRole().name();

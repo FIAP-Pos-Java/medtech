@@ -12,5 +12,5 @@ import java.util.UUID;
 @Repository
 public interface MedicoRepository extends JpaRepository<Medico, UUID> {
     Optional<Medico> findByLogin_Id(UUID loginId);
-    Optional<Usuario> findByLoginEmail(String email);
+    Optional<Medico> findByLoginEmail(String email);
 }
