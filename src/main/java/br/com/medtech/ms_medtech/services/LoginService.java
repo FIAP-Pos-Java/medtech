@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,6 +28,7 @@ public class LoginService {
     private final LoginRepository loginRepository;
     private final LoginMapper loginMapper;
     private final UUIDUtils uuidUtils;
+    private final PasswordEncoder passwordEncoder;
 
     private final String MESSAGE_LOGIN_ENCONTRADO = "este login já existe no sistema";
     private final String MESSAGE_lOGIN_NAO_ENCONTRADO = "este login não está cadastrado";
@@ -39,6 +42,7 @@ public class LoginService {
 
         Login cadastrarLogin = this.loginMapper.toCadastrarLogin(cadastrarLoginDTO);
         cadastrarLogin.setDataUltimoLogin(LocalDateTime.now());
+        cadastrarLogin.setPassword(this.passwordEncoder.encode(cadastrarLoginDTO.password()));
         this.loginRepository.save(cadastrarLogin);
     }
 
@@ -81,6 +85,7 @@ public class LoginService {
         Login loginAtualizado = this.loginMapper.toAtualizarLogin(atualizarLoginDTO);
         loginAtualizado.setId(id);
         loginAtualizado.setDataUltimoLogin(LocalDateTime.now());
+        loginAtualizado.setPassword(passwordEncoder.encode(atualizarLoginDTO.password()));
         this.loginRepository.save(loginAtualizado);
     }
 }

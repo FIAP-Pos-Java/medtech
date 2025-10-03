@@ -47,6 +47,7 @@ public class MedicoService {
         Medico medico = this.medicoMapper.toCadastrarMedico(cadastrarMedicoDTO);
         medico.setDataCadastro(LocalDateTime.now());
         medico.setLogin(buscandoLogin);
+        medico.setEnabled(true);
         this.medicoRepository.save(medico);
     }
 

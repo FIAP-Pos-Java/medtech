@@ -45,6 +45,7 @@ public class PacienteService {
         Paciente paciente = this.pacienteMapper.toCadastrarPaciente(cadastrarPacienteDTO);
         paciente.setDataCadastro(LocalDateTime.now());
         paciente.setLogin(buscandoLogin);
+        paciente.setEnabled(true);
         this.pacienteRepository.save(paciente);
     }
 
