@@ -2,10 +2,21 @@ package br.com.medtech.ms_medtech.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "tb_medico")
-public final class Medico extends Usuario{
+public final class Medico extends Usuario {
     private String crm;
     private String especialidade;
 

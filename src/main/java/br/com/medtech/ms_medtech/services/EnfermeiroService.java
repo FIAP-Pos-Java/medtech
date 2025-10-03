@@ -46,6 +46,7 @@ public class EnfermeiroService {
         Enfermeiro enfermeiro = this.enfermeiroMapper.toCadastrarEnfermeiro(cadastrarEnfermeiroDTO);
         enfermeiro.setDataCadastro(LocalDateTime.now());
         enfermeiro.setLogin(buscandoLogin);
+        enfermeiro.setEnabled(true);
         this.enfermeiroRepository.save(enfermeiro);
     }
 
