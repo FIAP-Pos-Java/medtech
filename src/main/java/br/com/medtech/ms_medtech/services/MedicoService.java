@@ -29,6 +29,7 @@ public class MedicoService {
     private final LoginRepository loginRepository;
     private final MedicoMapper medicoMapper;
     private final UUIDUtils uuidUtils;
+    private final UsuarioProducerService usuarioProducerService;
 
     private final String MESSAGE_MEDICO_ENCONTRADO = "este medico já existe no sistema";
     private final String MESSAGE_MEDICO_NAO_ENCONTRADO = "este medico não está cadastrado";
@@ -47,6 +48,7 @@ public class MedicoService {
         medico.setDataCadastro(LocalDateTime.now());
         medico.setLogin(buscandoLogin);
         medico.setEnabled(true);
+        this.usuarioProducerService.enviarUsuario(medico);
         this.medicoRepository.save(medico);
     }
 
