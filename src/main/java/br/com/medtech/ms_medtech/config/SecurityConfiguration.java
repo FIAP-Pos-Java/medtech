@@ -31,9 +31,7 @@ public class SecurityConfiguration {
                     authorize.requestMatchers("/login/**").permitAll();
                     authorize.requestMatchers("/medicos/**").permitAll();
                     authorize.requestMatchers("/enfermeiros/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.POST, "/pacientes/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.GET, "/pacientes/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.DELETE, "/pacientes/**").hasRole("MEDICO");
+                    authorize.requestMatchers("/pacientes/**").permitAll();
                     authorize.anyRequest().authenticated();
                 })
                 .build();
